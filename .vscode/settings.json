@@ -1,0 +1,20 @@
+{
+  "editor.tabSize": 2,
+  "workbench.colorCustomizations": {
+    "activityBar.activeBackground": "#ffa335",
+    "activityBar.activeBorder": "#008045",
+    "activityBar.background": "#ffa335",
+    "activityBar.foreground": "#15202b",
+    "activityBar.inactiveForeground": "#15202b99",
+    "activityBarBadge.background": "#008045",
+    "activityBarBadge.foreground": "#e7e7e7",
+    "statusBar.background": "#ff8c02",
+    "statusBar.foreground": "#15202b",
+    "statusBarItem.hoverBackground": "#ce7000",
+    "titleBar.activeBackground": "#ff8c02",
+    "titleBar.activeForeground": "#15202b",
+    "titleBar.inactiveBackground": "#ff8c0299",
+    "titleBar.inactiveForeground": "#15202b99"
+  },
+  "peacock.color": "#FF8C02"
+}
