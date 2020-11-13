@@ -62,4 +62,32 @@ authRoutes.post('/signup', (req, res, next) => {
     .catch(err => next(err))
 })
 
+
+authRoutes.post('/login', (req, res, next) => {
+  const { username, password } = req.body
+
+  User.findOne({ username }).then(user => {
+    if (!user) {
+      return next(new Error('No user with that username'))
+    }
+
+    if (bcrypt.compareSync(password, user.password) !== true) {
+      return next(new Error('Wrong credentials'))
+    } else {
+      req.session.currentUser = user
+      res.json(user)
+    }
+  }).catch(next)
+})
+
+authRoutes.post('/edit', (req, res, next) => {
+  const { username, campus, course } = req.body
+  console.log("req.sessions 🥺 =", req.session.currentUser)
+   const userId = req.session.currentUser._id
+
+  User.findByIdAndUpdate(userId, { username, campus, course }).then(user => {
+    res.json(user)
+  }).catch(next)
+})
+
 module.exports = authRoutes;

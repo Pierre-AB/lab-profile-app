@@ -10,6 +10,7 @@ const logger = require('morgan');
 const path = require('path');
 
 const session = require('express-session');
+const MongoStore = require('connect-mongo')(session);
 
 mongoose
   .connect('mongodb://localhost/lab-profile-app-gitlinked', { useNewUrlParser: true })
@@ -50,10 +51,31 @@ app.use(favicon(path.join(__dirname, 'public', 'images', 'favicon.ico')));
 app.use(session({
   secret: "some secret goes here",
   resave: true,
-  saveUninitialized: true
+  saveUninitialized: true,
+  // cookie: {
+  //   maxAge: 200000000,
+  // },
+  // store: new MongoStore({
+  //   mongooseConnection: mongoose.connection,
+  //   ttl: 60 * 60 * 24,
+  // })
 }));
 
 
+// middleware to update req.session
+
+// app.use((req, res, next) => {
+//   if (req.session.currentUser) {
+//     User.findById(req.session.currentUser._id)
+//       .then(user => {
+//         req.session.currentUser = user; // ♻️
+//         next()
+//       })
+//       .catch(next)
+//   } else {
+//     next()
+//   }
+// })
 
 // default value for title local
 app.locals.title = 'Express - Generated with IronGenerator';
