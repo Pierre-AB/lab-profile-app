@@ -9,7 +9,7 @@ authRoutes.post('/signup', (req, res, next) => {
   const username = req.body.username;
   const password = req.body.password;
   const campus = req.body.campus;
-  const course = req.body.course
+  const course = req.body.course;
 
   if (!username || !password) {
     res.status(400).json({ message: 'Provide username and password' });
@@ -62,4 +62,37 @@ authRoutes.post('/signup', (req, res, next) => {
     .catch(err => next(err))
 })
 
+authRoutes.post("/login", (req,res,next) => {
+  const {username, password} = req.body;
+  
+  User.findOne({username})
+    .then( userFromDB => {
+      console.log('userFromDb', userFromDB)
+      if (!userFromDB) {
+        return next(new Error('No user with that username'))
+      }
+
+      // compareSync
+      if (bcrypt.compareSync(password, userFromDB.password) !== true) {
+        return next(new Error('Wrong credentials'))
+      } else {
+        req.session.currentUser = userFromDB
+        res.json(userFromDB)
+      }
+    }).catch(err =>  res.status(400).json({ message: 'Oopps!! Something went wrong...' }))
+})
+
+authRoutes.post("/logout", (req,res,next) => {
+  req.session.destroy()
+  res.json({message: 'Your are now logged out.'})
+})
+
+authRoutes.get('/loggedin', (req, res, next) => {
+  // req.isAuthenticated() is defined by passport
+  if (req.session.currentUser) {
+      res.status(200).json(req.session.currentUser);
+      return;
+  }
+  res.status(403).json({ message: 'Unauthorized' });
+});
 module.exports = authRoutes;
