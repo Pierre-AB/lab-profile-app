@@ -62,6 +62,7 @@ authRoutes.post('/signup', (req, res, next) => {
     .catch(err => next(err))
 })
 
+
 authRoutes.post("/login", (req,res,next) => {
   const {username, password} = req.body;
   
@@ -82,6 +83,16 @@ authRoutes.post("/login", (req,res,next) => {
     }).catch(err =>  res.status(400).json({ message: 'Oopps!! Something went wrong...' }))
 })
 
+authRoutes.post('/edit', (req, res, next) => {
+  const { username, campus, course } = req.body
+  console.log("req.sessions 🥺 =", req.session.currentUser)
+   const userId = req.session.currentUser._id
+
+  User.findByIdAndUpdate(userId, { username, campus, course }).then(user => {
+    res.json(user)
+  }).catch(next)
+})
+
 authRoutes.post("/logout", (req,res,next) => {
   req.session.destroy()
   res.json({message: 'Your are now logged out.'})
@@ -95,4 +106,9 @@ authRoutes.get('/loggedin', (req, res, next) => {
   }
   res.status(403).json({ message: 'Unauthorized' });
 });
+
+
+
+
+
 module.exports = authRoutes;
