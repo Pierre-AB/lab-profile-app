@@ -62,6 +62,7 @@ authRoutes.post('/signup', (req, res, next) => {
     .catch(err => next(err))
 })
 
+//LOGIN
 
 authRoutes.post('/login', (req, res, next) => {
   const { username, password } = req.body
@@ -80,14 +81,41 @@ authRoutes.post('/login', (req, res, next) => {
   }).catch(next)
 })
 
+//EDIT
+
+
 authRoutes.post('/edit', (req, res, next) => {
   const { username, campus, course } = req.body
   console.log("req.sessions 🥺 =", req.session.currentUser)
-   const userId = req.session.currentUser._id
+  const userId = req.session.currentUser._id
 
   User.findByIdAndUpdate(userId, { username, campus, course }).then(user => {
     res.json(user)
   }).catch(next)
 })
+
+
+//LOGGEDIN
+
+authRoutes.get('/loggedin', (req, res, next) => {
+  if (req.session.currentUser) {
+    res.status(200).json(req.session.currentUser);
+    return;
+  }
+  res.status(403).json({ message: "log in first" });
+
+})
+
+//LOGOUT
+
+authRoutes.post('/logout', (req, res, next) => {
+  req.session.destroy();
+  res.json({ message: 'your now logged out' })
+})
+
+//UPLOAD
+
+//TO COME
+
 
 module.exports = authRoutes;
