@@ -9,7 +9,7 @@ authRoutes.post('/signup', (req, res, next) => {
   const username = req.body.username;
   const password = req.body.password;
   const campus = req.body.campus;
-  const course = req.body.course
+  const course = req.body.course;
 
   if (!username || !password) {
     res.status(400).json({ message: 'Provide username and password' });
@@ -64,21 +64,24 @@ authRoutes.post('/signup', (req, res, next) => {
 
 //LOGIN
 
-authRoutes.post('/login', (req, res, next) => {
-  const { username, password } = req.body
+authRoutes.post("/login", (req,res,next) => {
+  const {username, password} = req.body;
+  
+  User.findOne({username})
+    .then( userFromDB => {
+      console.log('userFromDb', userFromDB)
+      if (!userFromDB) {
+        return next(new Error('No user with that username'))
+      }
 
-  User.findOne({ username }).then(user => {
-    if (!user) {
-      return next(new Error('No user with that username'))
-    }
-
-    if (bcrypt.compareSync(password, user.password) !== true) {
-      return next(new Error('Wrong credentials'))
-    } else {
-      req.session.currentUser = user
-      res.json(user)
-    }
-  }).catch(next)
+      // compareSync
+      if (bcrypt.compareSync(password, userFromDB.password) !== true) {
+        return next(new Error('Wrong credentials'))
+      } else {
+        req.session.currentUser = userFromDB
+        res.json(userFromDB)
+      }
+    }).catch(err =>  res.status(400).json({ message: 'Oopps!! Something went wrong...' }))
 })
 
 //EDIT
@@ -110,7 +113,7 @@ authRoutes.get('/loggedin', (req, res, next) => {
 
 authRoutes.post('/logout', (req, res, next) => {
   req.session.destroy();
-  res.json({ message: 'your now logged out' })
+  res.json({ message: 'you are now logged out' })
 })
 
 //UPLOAD
